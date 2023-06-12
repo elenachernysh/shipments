@@ -1,11 +1,24 @@
 version: '3'
 
 services:
-  db:
-    image: postgres:15
+
+  deliverydb:
+    image: postgres:latest
     restart: always
     environment:
+      - POSTGRES_DB=delivery
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
       - '5432:5432'
+
+  delivery:
+    container_name: delivery
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      - deliverydb
